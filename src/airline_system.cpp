@@ -38,7 +38,7 @@ void reserveSeat(Seat seats[], int totalSeats) {
     cin >> seatChoice;
 
     // Validate seat choice
-    if (seatChoice < 1  seatChoice > totalSeats  seats[seatChoice - 1].seatNumber != -1) {
+    if (seatChoice < 1 || seatChoice > totalSeats || seats[seatChoice - 1].seatNumber != -1) {
         cout << "Invalid seat choice! Please try again.\n";
         return;
     }
