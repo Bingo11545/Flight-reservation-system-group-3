@@ -14,9 +14,8 @@ struct Flight {
     string date; // Flight date
 };
 
-// Function to reserve a seat
-void reserveSeat(Seat seats[], int totalSeats) {
-    int seatChoice;
+// Function to reserve a seat automatically
+void reserveSeatAuto(Seat seats[], int totalSeats, Flight currentFlight) {
     string name;
 
     // Ask user for their name
@@ -24,29 +23,23 @@ void reserveSeat(Seat seats[], int totalSeats) {
     cin.ignore(); // Clear input buffer
     getline(cin, name);
 
-    // Display available seats
-    cout << "\nAvailable seats: ";
+    // Find the first available seat
+    int seatAssigned = -1;
     for (int i = 0; i < totalSeats; ++i) {
         if (seats[i].seatNumber == -1) {
-            cout << i + 1 << " ";
+            seatAssigned = i + 1; // Seats are numbered from 1 to totalSeats
+            seats[i].seatNumber = seatAssigned;
+            seats[i].passengerName = name;
+            break;
         }
     }
-    cout << endl;
 
-    // Ask user to choose a seat
-    cout << "Enter seat number you want to reserve: ";
-    cin >> seatChoice;
-
-    // Validate seat choice
-    if (seatChoice < 1 || seatChoice > totalSeats || seats[seatChoice - 1].seatNumber != -1) {
-        cout << "Invalid seat choice! Please try again.\n";
-        return;
+    if (seatAssigned == -1) {
+        cout << "Sorry, no seats available for flight on " << currentFlight.date << ".\n";
+    } else {
+        cout << "Seat " << seatAssigned << " reserved successfully for " << name 
+             << " on flight " << currentFlight.date << ".\n";
     }
-
-    // Reserve the seat
-    seats[seatChoice - 1].seatNumber = seatChoice;
-    seats[seatChoice - 1].passengerName = name;
-    cout << "Seat " << seatChoice << " reserved successfully for " << name << ".\n";
 }
 
 // Function to display flight capacity information
@@ -79,10 +72,18 @@ void displayReservedSeats(Seat seats[], int totalSeats, Flight currentFlight) {
     }
 }
 
-// Main function
+// Function to set flight date
+void setFlightDate(Flight &currentFlight) {
+    cout << "Enter flight date (YYYY-MM-DD): ";
+    cin.ignore();
+    getline(cin, currentFlight.date);
+    cout << "Flight date set to: " << currentFlight.date << endl;
+}
+
 int main() {
     const int totalSeats = 150; // Total number of seats
     Seat seats[totalSeats];
+    Flight currentFlight;
 
     // Initialize all seats as not reserved
     for (int i = 0; i < totalSeats; ++i) {
@@ -90,37 +91,41 @@ int main() {
         seats[i].passengerName = "";
     }
 
-    // Create a flight instance
-    Flight currentFlight;
-    currentFlight.date = "2023-10-01"; // Example flight date
+    // Set initial flight date
+    currentFlight.date = "2023-10-01";
 
     int choice;
     do {
         cout << "\n--- Airline Reservation System ---\n";
-        cout << "1. Display flight capacity\n";
-        cout << "2. Reserve a seat\n";
-        cout << "3. Display reserved seats\n";
-        cout << "4. Exit\n";
+        cout << "Current Flight Date: " << currentFlight.date << endl;
+        cout << "1. Set flight date\n";
+        cout << "2. Display flight capacity\n";
+        cout << "3. Reserve a seat\n";
+        cout << "4. Display reserved seats\n";
+        cout << "5. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
         switch (choice) {
             case 1:
-                displayFlightCapacity(seats, totalSeats, currentFlight);
+                setFlightDate(currentFlight);
                 break;
             case 2:
-                reserveSeat(seats, totalSeats);
+                displayFlightCapacity(seats, totalSeats, currentFlight);
                 break;
             case 3:
-                displayReservedSeats(seats, totalSeats, currentFlight);
+                reserveSeatAuto(seats, totalSeats, currentFlight);
                 break;
             case 4:
+                displayReservedSeats(seats, totalSeats, currentFlight);
+                break;
+            case 5:
                 cout << "Exiting the system. Goodbye!\n";
                 break;
             default:
                 cout << "Invalid choice! Please try again.\n";
         }
-    } while (choice != 4);
+    } while (choice != 5);
 
     return 0;
 }
