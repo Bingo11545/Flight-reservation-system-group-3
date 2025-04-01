@@ -11,34 +11,8 @@ struct Seat {
 
 // Define a structure for Flight
 struct Flight {
-    string flightNumber; // Flight number
-    string origin; // Flight origin
-    string destination; // Flight destination
-    double price; // Flight price
+    string date; // Flight date
 };
-
-// Function to check availability and price of flights from Addis Ababa
-void checkFlightsFromAddisAbaba(Flight flights[], int size) {
-    string userDestination;
-    cout << "Enter your desired destination: ";
-    cin.ignore();  // Clears the input buffer before using getline
-    getline(cin, userDestination);
-
-    bool found = false;
-    cout << "\nSearching for flights from Addis Ababa to " << userDestination << "...\n";
-    
-    for (int i = 0; i < size; i++) {
-        if (flights[i].origin == "Addis Ababa" && flights[i].destination == userDestination) {
-            cout << "Flight " << flights[i].flightNumber << " to " << flights[i].destination
-                 << " is available for $" << flights[i].price << ".\n";
-            found = true;
-        }
-    }
-
-    if (!found) {
-        cout << "Sorry, no flights available to " << userDestination << ".\n";
-    }
-}
 
 // Function to reserve a seat automatically
 void reserveSeatAuto(Seat seats[], int totalSeats, Flight currentFlight) {
@@ -61,10 +35,10 @@ void reserveSeatAuto(Seat seats[], int totalSeats, Flight currentFlight) {
     }
 
     if (seatAssigned == -1) {
-        cout << "Sorry, no seats available for flight on " << currentFlight.flightNumber << ".\n";
+        cout << "Sorry, no seats available for flight on " << currentFlight.date << ".\n";
     } else {
-        cout << "Seat " << seatAssigned << " reserved successfully for " << name
-             << " on flight " << currentFlight.flightNumber << ".\n";
+        cout << "Seat " << seatAssigned << " reserved successfully for " << name 
+             << " on flight " << currentFlight.date << ".\n";
     }
 }
 
@@ -82,7 +56,7 @@ void displayFlightCapacity(Seat seats[], int totalSeats, Flight currentFlight) {
     int availableSeats = totalSeats - reservedSeats;
 
     // Output flight capacity information
-    cout << "\nFlight Capacity for " << currentFlight.flightNumber << ":" << endl;
+    cout << "\nFlight Capacity for " << currentFlight.date << ":" << endl;
     cout << "Total Seats: " << totalSeats << endl;
     cout << "Reserved Seats: " << reservedSeats << endl;
     cout << "Available Seats: " << availableSeats << endl;
@@ -90,7 +64,7 @@ void displayFlightCapacity(Seat seats[], int totalSeats, Flight currentFlight) {
 
 // Function to display reserved seats
 void displayReservedSeats(Seat seats[], int totalSeats, Flight currentFlight) {
-    cout << "\nReserved Seats for Flight " << currentFlight.flightNumber << ":" << endl;
+    cout << "\nReserved Seats for Flight on " << currentFlight.date << ":" << endl;
     for (int i = 0; i < totalSeats; ++i) {
         if (seats[i].seatNumber != -1) {
             cout << "Seat " << seats[i].seatNumber << ": " << seats[i].passengerName << endl;
@@ -98,24 +72,18 @@ void displayReservedSeats(Seat seats[], int totalSeats, Flight currentFlight) {
     }
 }
 
-// Function to set flight date (or flight number in this case)
+// Function to set flight date
 void setFlightDate(Flight &currentFlight) {
     cout << "Enter flight date (YYYY-MM-DD): ";
     cin.ignore();
-    getline(cin, currentFlight.flightNumber); // Using flight number for simplicity
-    cout << "Flight date set to: " << currentFlight.flightNumber << endl;
+    getline(cin, currentFlight.date);
+    cout << "Flight date set to: " << currentFlight.date << endl;
 }
+
 int main() {
     const int totalSeats = 150; // Total number of seats
     Seat seats[totalSeats];
-    Flight flights[5] = { 
-        {"ET500", "Addis Ababa", "New York", 1200},
-        {"ET700", "Addis Ababa", "London", 950},
-        {"ET300", "Addis Ababa", "Dubai", 800},
-        {"ET200", "Addis Ababa", "Nairobi", 500},
-        {"ET100", "Addis Ababa", "Paris", 1100}
-    };
-    Flight currentFlight = {"ET500", "Addis Ababa", "New York", 1200};  // Default current flight
+    Flight currentFlight;
 
     // Initialize all seats as not reserved
     for (int i = 0; i < totalSeats; ++i) {
@@ -123,15 +91,18 @@ int main() {
         seats[i].passengerName = "";
     }
 
+    // Set initial flight date
+    currentFlight.date = "2025-04-01";
+
     int choice;
     do {
         cout << "\n--- Airline Reservation System ---\n";
+        cout << "Current Flight Date: " << currentFlight.date << endl;
         cout << "1. Set flight date\n";
-        cout << "2. Check flight availability and price\n";  // Moved this option up
+        cout << "2. Display flight capacity\n";
         cout << "3. Reserve a seat\n";
-        cout << "4. Display flight capacity\n";
-        cout << "5. Display reserved seats\n";
-        cout << "6. Exit\n";
+        cout << "4. Display reserved seats\n";
+        cout << "5. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -140,24 +111,21 @@ int main() {
                 setFlightDate(currentFlight);
                 break;
             case 2:
-                checkFlightsFromAddisAbaba(flights, 5); // Check flight availability and price
+                displayFlightCapacity(seats, totalSeats, currentFlight);
                 break;
             case 3:
                 reserveSeatAuto(seats, totalSeats, currentFlight);
                 break;
             case 4:
-                displayFlightCapacity(seats, totalSeats, currentFlight);
-                break;
-            case 5:
                 displayReservedSeats(seats, totalSeats, currentFlight);
                 break;
-            case 6:
+            case 5:
                 cout << "Exiting the system. Goodbye!\n";
                 break;
             default:
                 cout << "Invalid choice! Please try again.\n";
         }
-    } while (choice != 6);
+    } while (choice != 5);
 
     return 0;
 }
