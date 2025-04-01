@@ -92,7 +92,7 @@ int main() {
     }
 
     // Set initial flight date
-    currentFlight.date = "2023-10-01";
+    currentFlight.date = "2025-04-01";
 
     int choice;
     do {
