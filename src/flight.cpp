@@ -9,11 +9,13 @@ struct Flight {
     double price;
 };
 
+// Fixed logical OR in the function
 bool isExcludedDestination(const string& destination) {
-    return (destination == "Yemen"  destination == "Ukraine"  destination == "Eritrea" 
+    return (destination == "Yemen"  destination == "Ukraine"  destination == "Eritrea"  
             destination == "Somalia"  destination == "Russia" || destination == "Australia");
 }
 
+// Check flights originating from Addis Ababa
 void checkFlightsFromAddisAbaba(Flight flights[], int size) {
     string userDestination;
     cout << "Welcome to Ethiopian Airlines!\n";
